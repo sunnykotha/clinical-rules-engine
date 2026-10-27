@@ -1,0 +1,74 @@
+{
+  "id": "diabetes-worked-example",
+  "version": "1.0",
+  "effective_from": "2026-01-01",
+  "rules": [
+    {
+      "id": "uncontrolled-diabetes-recent-er",
+      "version": "1.0",
+      "description": "High HbA1c with a recent emergency visit",
+      "priority": 1,
+      "condition": {
+        "operator": "AND",
+        "children": [
+          {
+            "operator": "gt",
+            "fact": "hba1c",
+            "value": 8
+          },
+          {
+            "operator": "within_last_days",
+            "fact": "emergency_visit",
+            "within_days": 30
+          }
+        ]
+      },
+      "action": {
+        "code": "UNCONTROLLED_DIABETES",
+        "message": "Prompt clinical review is indicated",
+        "issue": "diabetes-care",
+        "severity": 5,
+        "mutually_exclusive_group": "diabetes-status"
+      },
+      "unknown_policy": "skip",
+      "cooldown_days": 30,
+      "effective_from": "2026-01-01"
+    },
+    {
+      "id": "diabetes-care-gap",
+      "version": "1.0",
+      "description": "High HbA1c without a recent endocrinology visit",
+      "priority": 2,
+      "condition": {
+        "operator": "AND",
+        "children": [
+          {
+            "operator": "gt",
+            "fact": "hba1c",
+            "value": 8
+          },
+          {
+            "operator": "NOT",
+            "children": [
+              {
+                "operator": "within_last_days",
+                "fact": "endocrinology_visit",
+                "within_days": 180
+              }
+            ]
+          }
+        ]
+      },
+      "action": {
+        "code": "DIABETES_GAP",
+        "message": "Follow-up with endocrinology is overdue",
+        "issue": "diabetes-care",
+        "severity": 2,
+        "mutually_exclusive_group": "diabetes-status"
+      },
+      "unknown_policy": "skip",
+      "cooldown_days": 30,
+      "effective_from": "2026-01-01"
+    }
+  ]
+}

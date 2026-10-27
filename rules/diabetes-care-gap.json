@@ -1,0 +1,43 @@
+{
+  "id": "clinical-guidelines",
+  "version": "1.0",
+  "effective_from": "2026-01-01",
+  "rules": [
+    {
+      "id": "diabetes-care-gap",
+      "version": "1.0",
+      "description": "Identify a diabetes care gap when HbA1c is above 8.0 and no endocrinology visit occurred in the last 180 days.",
+      "priority": 2,
+      "condition": {
+        "operator": "AND",
+        "children": [
+          {
+            "operator": "gt",
+            "fact": "hba1c",
+            "value": 8.0
+          },
+          {
+            "operator": "NOT",
+            "children": [
+              {
+                "operator": "within_last_days",
+                "fact": "endocrinology_visit",
+                "within_days": 180
+              }
+            ]
+          }
+        ]
+      },
+      "action": {
+        "code": "DIABETES_GAP",
+        "message": "Diabetes follow-up may be needed",
+        "severity": 2,
+        "issue": "diabetes-care",
+        "mutually_exclusive_group": "diabetes-status"
+      },
+      "unknown_policy": "skip",
+      "cooldown_days": 30,
+      "effective_from": "2026-01-01"
+    }
+  ]
+}
